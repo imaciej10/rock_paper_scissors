@@ -6,16 +6,13 @@
     <title>Document</title>
     <script>
 
+    playerPoints = 0;
+    computerPoints = 0;     
     weapons = ["rock", "paper", "scissors"];
 
     function getComputerChoice(){
-        computerSelection = Math.floor(Math.random() * weapons.length);
+        let computerSelection = Math.floor(Math.random() * weapons.length);
         return weapons[computerSelection];
-    }
-
-    function getPlayersChoice(){
-        playerSelection = Math.floor(Math.random() * weapons.length);
-        return weapons[playerSelection];
     }
 
     function playRound(playerSelection, computerSelection) {
@@ -23,27 +20,45 @@
         playerSelection = playerSelection.toLowerCase();
 
         if (playerSelection === "rock" && computerSelection === "scissors"){
-            alert("You win! Rock beats Scissors!");
+            playerPoints++;
+            return console.log("You win! Rock beats Scissors!");           
         } else if (playerSelection === "paper" && computerSelection === "rock"){
-            alert("You win! Paper beats rock!");
-        } else if (playerSelection === "scissors" && computer Selection === "paper"){
-            alert("You win! scissors beat paper!");
+            playerPoints++;
+            return console.log("You win! Paper beats rock!");
+        } else if (playerSelection === "scissors" && computerSelection === "paper"){
+            playerPoints++;
+            return console.log("You win! scissors beat paper!");
         } else if (playerSelection === "paper" && computerSelection ==="scissors"){
-            alert("You lost! Scissors beat paper");
+            computerPoints++;
+            return console.log("You lost! Scissors beat paper");
         } else if (playerSelection === "scissors" && computerSelection ==="rock"){
-            alert("You lost! Rock beats scissors");
-        } else if (playerSelection ==="rock" && computerSelection ==="paper"){
-            alert("You lost! Paper beats rock");
+            computerPoints++;
+            return console.log("You lost! Rock beats scissors");
+        } else if (playerSelection === "rock" && computerSelection ==="paper"){
+            computerPoints++;
+            return console.log("You lost! Paper beats rock");
         } else {
-            alert("Unknown result");
+            return console.log("Draw");
         }
     }   
 
-    const playerSelection = "Rock";
-    const computerSelection = getComputerChoice();
-    console.log(playround(playerSelection,computerSelection))
+    function checkWinner(){
+        playerPoints > computerPoints ? alert("Player won") : alert("Computer won");
+    }
 
+    function playGame(){
+        
+        for(i = 0; i <5; i++) {
 
+            const playerSelection = prompt("Choose your weapon: ");
+            const computerSelection = getComputerChoice();
+
+            playRound(playerSelection, computerSelection);
+        }
+    }
+
+    playGame();
+    checkWinner();
 
     </script>
 </head>
