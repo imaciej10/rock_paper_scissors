@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+
+    weapons = ["rock", "paper", "scissors"];
+
+    function getComputerChoice(){
+        computerSelection = Math.floor(Math.random() * weapons.length);
+        return weapons[computerSelection];
+    }
+
+    function getPlayersChoice(){
+        playerSelection = Math.floor(Math.random() * weapons.length);
+        return weapons[playerSelection];
+    }
+
+    function playRound(playerSelection, computerSelection) {
+        
+        playerSelection = playerSelection.toLowerCase();
+
+        if (playerSelection === "rock" && computerSelection === "scissors"){
+            alert("You win! Rock beats Scissors!");
+        } else if (playerSelection === "paper" && computerSelection === "rock"){
+            alert("You win! Paper beats rock!");
+        } else if (playerSelection === "scissors" && computer Selection === "paper"){
+            alert("You win! scissors beat paper!");
+        } else if (playerSelection === "paper" && computerSelection ==="scissors"){
+            alert("You lost! Scissors beat paper");
+        } else if (playerSelection === "scissors" && computerSelection ==="rock"){
+            alert("You lost! Rock beats scissors");
+        } else if (playerSelection ==="rock" && computerSelection ==="paper"){
+            alert("You lost! Paper beats rock");
+        } else {
+            alert("Unknown result");
+        }
+    }   
+
+    const playerSelection = "Rock";
+    const computerSelection = getComputerChoice();
+    console.log(playround(playerSelection,computerSelection))
+
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
