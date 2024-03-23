@@ -10,6 +10,7 @@
         playerPoints = 0;
         computerPoints = 0;
         roundsCount = 0;
+        roundsTotal = 5;
         weapons = ["rock", "paper", "scissors"];
 
         function getComputerChoice() {
@@ -17,21 +18,21 @@
           return weapons[computerSelection];
         }
 
-        function writeRoundScore(playerWins) {
+        function writeRoundScore(playerWins, round) {
           if (playerWins === true) {
             const roundResult = document.createElement("div");
             roundResult.classList.add("result");
-            roundResult.textContent = "You won!";
+            roundResult.textContent = `Round ${round}:` + " You won!";
             document.body.append(roundResult);
           } else if (playerWins === false) {
             const roundResult = document.createElement("div");
             roundResult.classList.add("result");
-            roundResult.textContent = "You lost!";
+            roundResult.textContent = `Round ${round}:` + " You lost!";
             document.body.append(roundResult);
           } else {
             const roundResult = document.createElement("div");
             roundResult.classList.add("result");
-            roundResult.textContent = "Draw!";
+            roundResult.textContent = `Round ${round}:` + " Draw!";
             document.body.append(roundResult);
           }
         }
@@ -40,6 +41,7 @@
           if (playerSelection === "rock" && computerSelection === "scissors") {
             playerPoints++;
             scoreContainer.textContent = "You win! Paper beats rock";
+            scoreContainer.style.backgroundColor = "green";
             return true;
           } else if (
             playerSelection === "paper" &&
@@ -47,6 +49,7 @@
           ) {
             playerPoints++;
             scoreContainer.textContent = "You win! Paper beats rock!";
+            scoreContainer.style.backgroundColor = "green";
             return true;
           } else if (
             playerSelection === "scissors" &&
@@ -54,6 +57,7 @@
           ) {
             playerPoints++;
             scoreContainer.textContent = "You win! scissors beat paper!";
+            scoreContainer.style.backgroundColor = "green";
             return true;
           } else if (
             playerSelection === "paper" &&
@@ -61,6 +65,7 @@
           ) {
             computerPoints++;
             scoreContainer.textContent = "You lost! Scissors beat paper";
+            scoreContainer.style.backgroundColor = "red";
             return false;
           } else if (
             playerSelection === "scissors" &&
@@ -68,6 +73,7 @@
           ) {
             computerPoints++;
             scoreContainer.textContent = "You lost! Rock beats scissors";
+            scoreContainer.style.backgroundColor = "red";
             return false;
           } else if (
             playerSelection === "rock" &&
@@ -75,21 +81,23 @@
           ) {
             computerPoints++;
             scoreContainer.textContent = "You lost! Paper beats rock";
+            scoreContainer.style.backgroundColor = "red";
             return false;
           } else {
             scoreContainer.textContent = "Draw";
+            scoreContainer.style.backgroundColor = "gray";
             return;
           }
         }
 
         function checkWinner() {
           playerPoints > computerPoints
-            ? (title = "Congrats, you won! ")
-            : (title = "You lost... Try again! ");
+            ? ((title = "Congrats, you won! "), (playerWon = true))
+            : ((title = "You lost... Try again! "), (playerWon = false));
           let message =
             "Player: " + playerPoints + " | " + computerPoints + " Computer";
 
-          return [message, title];
+          return [message, title, playerWon];
         }
 
         function playGame(playerSelection) {
@@ -97,63 +105,77 @@
           return (roundResult = playRound(playerSelection, computerSelection));
         }
 
+        function writeFinalScore() {
+          let results = checkWinner();
+
+          const finalScore = document.createElement("div");
+          const winner = document.createElement("div");
+          winner.classList.add("winner");
+          finalScore.classList.add("final-score");
+          winner.textContent = results[1];
+          results[2] === true
+            ? (winner.style.color = "green")
+            : (winner.style.color = "red");
+          finalScore.textContent = `Game score: ${results[0]}`;
+
+          document.body.append(winner);
+          document.body.append(finalScore);
+        }
+
+        function resetGame() {
+          roundsCount = 0;
+          playerPoints = 0;
+          computerPoints = 0;
+        }
+
+        function clearPreviousScores() {
+          let scoreList = document.querySelectorAll(".result");
+          let winnerName = document.querySelectorAll(".winner");
+          let globalScore = document.querySelectorAll(".final-score");
+
+          scoreList.forEach(function (element) {
+            element.remove();
+          });
+          winnerName.forEach(function (element) {
+            element.remove();
+          });
+          globalScore.forEach(function (element) {
+            element.remove();
+          });
+        }
+
         const btnContainer = document.querySelector("#buttonContainer");
         const scoreContainer = document.querySelector("#score");
 
         btnContainer.addEventListener("click", (event) => {
           if (roundsCount === 0) {
-            let scoreList = document.querySelectorAll(".result");
-            let winnerName = document.querySelectorAll(".winner");
-            let globalScore = document.querySelectorAll(".final-score");
-
-            scoreList.forEach(function (element) {
-              element.remove();
-            });
-            winnerName.forEach(function (element) {
-              element.remove();
-            });
-            globalScore.forEach(function (element) {
-              element.remove();
-            });
+            clearPreviousScores();
           }
 
           switch (true) {
             case event.target.classList.contains("rock"):
               playGame("rock");
-              writeRoundScore(roundResult);
+              writeRoundScore(roundResult, roundsCount);
               roundsCount++;
               break;
             case event.target.classList.contains("paper"):
               playGame("paper");
-              writeRoundScore(roundResult);
+              writeRoundScore(roundResult, roundsCount);
               roundsCount++;
               break;
             case event.target.classList.contains("scissors"):
               playGame("scissors");
-              writeRoundScore(roundResult);
+              writeRoundScore(roundResult, roundsCount);
               roundsCount++;
               break;
             default:
               console.log("fail");
-              event.stopPropagation();
               break;
           }
 
-          if (roundsCount === 5) {
-            let results = checkWinner();
-
-            const finalScore = document.createElement("div");
-            const winner = document.createElement("div");
-            winner.classList.add("winner");
-            finalScore.classList.add("final-score");
-            winner.textContent = results[1];
-            finalScore.textContent = `Game score: ${results[0]}`;
-
-            document.body.append(winner);
-            document.body.append(finalScore);
-            roundsCount = 0;
-            playerPoints = 0;
-            computerPoints = 0;
+          if (roundsCount === roundsTotal) {
+            writeFinalScore();
+            resetGame();
           }
         });
       });
