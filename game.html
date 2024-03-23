@@ -121,17 +121,23 @@
             case event.target.classList.contains("rock"):
               playGame("rock");
               writeRoundScore(roundResult);
+              roundsCount++;
               break;
             case event.target.classList.contains("paper"):
               playGame("paper");
               writeRoundScore(roundResult);
+              roundsCount++;
               break;
             case event.target.classList.contains("scissors"):
               playGame("scissors");
               writeRoundScore(roundResult);
+              roundsCount++;
+              break;
+            default:
+              console.log("fail");
+              event.stopPropagation();
               break;
           }
-          roundsCount++;
 
           if (roundsCount === 5) {
             let results = checkWinner();
