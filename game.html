@@ -1,69 +1,167 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock, paper, scissors game</title>
+    <link rel="stylesheet" href="style.css" />
     <script>
+      document.addEventListener("DOMContentLoaded", function (event) {
+        playerPoints = 0;
+        computerPoints = 0;
+        roundsCount = 0;
+        weapons = ["rock", "paper", "scissors"];
 
-    playerPoints = 0;
-    computerPoints = 0;     
-    weapons = ["rock", "paper", "scissors"];
-
-    function getComputerChoice(){
-        let computerSelection = Math.floor(Math.random() * weapons.length);
-        return weapons[computerSelection];
-    }
-
-    function playRound(playerSelection, computerSelection) {
-        
-        playerSelection = playerSelection.toLowerCase();
-
-        if (playerSelection === "rock" && computerSelection === "scissors"){
-            playerPoints++;
-            return console.log("You win! Rock beats Scissors!");           
-        } else if (playerSelection === "paper" && computerSelection === "rock"){
-            playerPoints++;
-            return console.log("You win! Paper beats rock!");
-        } else if (playerSelection === "scissors" && computerSelection === "paper"){
-            playerPoints++;
-            return console.log("You win! scissors beat paper!");
-        } else if (playerSelection === "paper" && computerSelection ==="scissors"){
-            computerPoints++;
-            return console.log("You lost! Scissors beat paper");
-        } else if (playerSelection === "scissors" && computerSelection ==="rock"){
-            computerPoints++;
-            return console.log("You lost! Rock beats scissors");
-        } else if (playerSelection === "rock" && computerSelection ==="paper"){
-            computerPoints++;
-            return console.log("You lost! Paper beats rock");
-        } else {
-            return console.log("Draw");
+        function getComputerChoice() {
+          let computerSelection = Math.floor(Math.random() * weapons.length);
+          return weapons[computerSelection];
         }
-    }   
 
-    function checkWinner(){
-        playerPoints > computerPoints ? alert("Player won") : alert("Computer won");
-        console.log("Player: " + playerPoints + " | " + computerPoints + " Computer" );
-    }
-
-    function playGame(){
-        
-        for(i = 0; i <5; i++) {
-
-            const playerSelection = prompt("Choose your weapon: ");
-            const computerSelection = getComputerChoice();
-
-            playRound(playerSelection, computerSelection);
+        function writeRoundScore(playerWins) {
+          if (playerWins === true) {
+            const roundResult = document.createElement("div");
+            roundResult.classList.add("result");
+            roundResult.textContent = "You won!";
+            document.body.append(roundResult);
+          } else if (playerWins === false) {
+            const roundResult = document.createElement("div");
+            roundResult.classList.add("result");
+            roundResult.textContent = "You lost!";
+            document.body.append(roundResult);
+          } else {
+            const roundResult = document.createElement("div");
+            roundResult.classList.add("result");
+            roundResult.textContent = "Draw!";
+            document.body.append(roundResult);
+          }
         }
-    }
 
-    playGame();
-    checkWinner();
+        function playRound(playerSelection, computerSelection) {
+          if (playerSelection === "rock" && computerSelection === "scissors") {
+            playerPoints++;
+            scoreContainer.textContent = "You win! Paper beats rock";
+            return true;
+          } else if (
+            playerSelection === "paper" &&
+            computerSelection === "rock"
+          ) {
+            playerPoints++;
+            scoreContainer.textContent = "You win! Paper beats rock!";
+            return true;
+          } else if (
+            playerSelection === "scissors" &&
+            computerSelection === "paper"
+          ) {
+            playerPoints++;
+            scoreContainer.textContent = "You win! scissors beat paper!";
+            return true;
+          } else if (
+            playerSelection === "paper" &&
+            computerSelection === "scissors"
+          ) {
+            computerPoints++;
+            scoreContainer.textContent = "You lost! Scissors beat paper";
+            return false;
+          } else if (
+            playerSelection === "scissors" &&
+            computerSelection === "rock"
+          ) {
+            computerPoints++;
+            scoreContainer.textContent = "You lost! Rock beats scissors";
+            return false;
+          } else if (
+            playerSelection === "rock" &&
+            computerSelection === "paper"
+          ) {
+            computerPoints++;
+            scoreContainer.textContent = "You lost! Paper beats rock";
+            return false;
+          } else {
+            scoreContainer.textContent = "Draw";
+            return;
+          }
+        }
 
+        function checkWinner() {
+          playerPoints > computerPoints
+            ? (title = "Congrats, you won! ")
+            : (title = "You lost... Try again! ");
+          let message =
+            "Player: " + playerPoints + " | " + computerPoints + " Computer";
+
+          return [message, title];
+        }
+
+        function playGame(playerSelection) {
+          const computerSelection = getComputerChoice();
+          return (roundResult = playRound(playerSelection, computerSelection));
+        }
+
+        const btnContainer = document.querySelector("#buttonContainer");
+        const scoreContainer = document.querySelector("#score");
+
+        btnContainer.addEventListener("click", (event) => {
+          if (roundsCount === 0) {
+            let scoreList = document.querySelectorAll(".result");
+            let winnerName = document.querySelectorAll(".winner");
+            let globalScore = document.querySelectorAll(".final-score");
+
+            scoreList.forEach(function (element) {
+              element.remove();
+            });
+            winnerName.forEach(function (element) {
+              element.remove();
+            });
+            globalScore.forEach(function (element) {
+              element.remove();
+            });
+          }
+
+          switch (true) {
+            case event.target.classList.contains("rock"):
+              playGame("rock");
+              writeRoundScore(roundResult);
+              break;
+            case event.target.classList.contains("paper"):
+              playGame("paper");
+              writeRoundScore(roundResult);
+              break;
+            case event.target.classList.contains("scissors"):
+              playGame("scissors");
+              writeRoundScore(roundResult);
+              break;
+          }
+          roundsCount++;
+
+          if (roundsCount === 5) {
+            let results = checkWinner();
+
+            const finalScore = document.createElement("div");
+            const winner = document.createElement("div");
+            winner.classList.add("winner");
+            finalScore.classList.add("final-score");
+            winner.textContent = results[1];
+            finalScore.textContent = `Game score: ${results[0]}`;
+
+            document.body.append(winner);
+            document.body.append(finalScore);
+            roundsCount = 0;
+            playerPoints = 0;
+            computerPoints = 0;
+          }
+        });
+      });
     </script>
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <div class="title">
+      Choose your weapon:
+      <div id="buttonContainer">
+        <button class="rock">Rock</button>
+        <button class="paper">Paper</button>
+        <button class="scissors">Scissors</button>
+      </div>
+      <div id="score"></div>
+    </div>
+  </body>
 </html>
